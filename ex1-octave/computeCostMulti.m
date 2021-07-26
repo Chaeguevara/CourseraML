@@ -14,7 +14,9 @@ J = 0;
 %               You should set J to the cost.
 
 theta = theta' % Transpose
-
+X = X';
+y = y';
+J = sum((theta*X-y).^2);
 
 
 % =========================================================================
