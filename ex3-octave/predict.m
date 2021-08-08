@@ -21,9 +21,18 @@ p = zeros(size(X, 1), 1);
 %       can use max(A, [], 2) to obtain the max for each row.
 %
 
+% Add one column(bias)
+X = [ones(m, 1) X];
 
+A2 = sigmoid(X*Theta1');
 
+%row dimension
+n = size(A2, 1);
+%add bias
+A2 = [ones(n,1) A2];
 
+p = sigmoid(A2*Theta2');
+[temp,p] = max(p,[],2);
 
 
 
