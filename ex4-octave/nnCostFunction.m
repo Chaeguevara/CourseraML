@@ -53,7 +53,7 @@ Theta2_grad = zeros(size(Theta2));
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the 
 %               first time.
-%
+% 
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
@@ -63,18 +63,18 @@ Theta2_grad = zeros(size(Theta2));
 %
 
 % Add Bias
-XTemp = [ones(size(X,1),1) X];
+X = [ones(size(X,1),1) X];
 
 %Input for Hidden layer
-Z2 = XTemp * Theta1';
+Z2 = X * Theta1';
 
 %Calc g(z1) which equals to A1 
 A2 = sigmoid(Z2);
 
 
 %Add bias to A1
-A2Temp = [ones(size(A2,1),1) A2];
-Z3 = A2Temp * Theta2';
+A2 = [ones(size(A2,1),1) A2];
+Z3 = A2 * Theta2';
 A3 = sigmoid(Z3);
 
 
@@ -84,11 +84,14 @@ maps = zeros(size(A3,1), size(A3,2));
 for i=1:m
   maps(i,y(i)) = 1;
 end
-J = -sum(sum(maps.*log(A3)+(1-maps).*log(1-A3)));
-J /= m;
 
+%Cost. First column of Theta needs to be excluded(From A0) 
+J = -sum(sum(maps.*log(A3)+(1-maps).*log(1-A3)))/m + ...
+      (lambda)*(sum(sum(Theta1(:,2:end).^2))+sum(sum(Theta2(:,2:end).^2)))/(2*m);
 
-
+%Compute delta
+DeltaL = A3 - maps;
+Delta2 = DeltaL*Theta2.*A2.*(1-A2);
 
 
 
@@ -100,6 +103,7 @@ J /= m;
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
+
 
 
 end
