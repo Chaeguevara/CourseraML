@@ -63,10 +63,11 @@ Theta2_grad = zeros(size(Theta2));
 %
 
 % Add Bias
-X = [ones(size(X,1),1) X];
+A1 = X;
+A1 = [ones(size(A1,1),1) A1];
 
 %Input for Hidden layer
-Z2 = X * Theta1';
+Z2 = A1 * Theta1';
 
 %Calc g(z1) which equals to A1 
 A2 = sigmoid(Z2);
@@ -83,18 +84,74 @@ maps = zeros(size(A3,1), size(A3,2));
 
 for i=1:m
   maps(i,y(i)) = 1;
+##  y_new(y(i),i)=1;
 end
 
 %Cost. First column of Theta needs to be excluded(From A0) 
 J = -sum(sum(maps.*log(A3)+(1-maps).*log(1-A3)))/m + ...
       (lambda)*(sum(sum(Theta1(:,2:end).^2))+sum(sum(Theta2(:,2:end).^2)))/(2*m);
 
-%Compute delta
-DeltaL = A3 - maps;
-Delta2 = DeltaL*Theta2.*A2.*(1-A2);
 
+delta3 = A3-maps;
+delta2 = (delta3*Theta2).*sigmoidGradient([ones(size(Z2,1),1) Z2]);
+%delta2(:,1) = 1;
+delta2 = delta2(:,2:end);
+Theta2_grad = delta3'*A2;
+Theta1_grad = delta2'*A1;
+Theta2_grad = Theta2_grad/m;
+Theta1_grad = Theta1_grad/m;
 
-
+Theta1_grad(:, 2:end) +=(lambda/m) * Theta1(:, 2:end);
+Theta2_grad(:, 2:end) +=(lambda/m) * Theta2(:, 2:end);
+% Back propagation
+##for t=1:m
+##
+##    % Step 1
+##	a1 = A1(t,:); % X already have a bias (1*401)
+##    a1 = a1'; % (401*1)
+##	z2 = Theta1 * a1; % (25*401)*(401*1)
+##	a2 = sigmoid(z2); % (25*1)
+##    
+##    a2 = [1 ; a2]; % adding a bias (26*1)
+##	z3 = Theta2 * a2; % (10*26)*(26*1)
+##	a3 = sigmoid(z3); % final activation layer a3 == h(theta) (10*1)
+##    
+##    % Step 2
+##	delta_3 = a3 - y_new(:,t); % (10*1)
+##	
+##    z2=[1; z2]; % bias (26*1)
+##    % Step 3
+##    delta_2 = (Theta2' * delta_3) .* sigmoidGradient(z2); % ((26*10)*(10*1))=(26*1)
+##
+##    % Step 4
+##	delta_2 = delta_2(2:end); % skipping sigma2(0) (25*1)
+##
+##	Theta2_grad = Theta2_grad + delta_3 * a2'; % (10*1)*(1*26)
+##	Theta1_grad = Theta1_grad + delta_2 * a1'; % (25*1)*(1*401)
+##    
+##end;
+##
+##% Step 5
+##Theta2_grad = (1/m) * Theta2_grad; % (10*26)
+##Theta1_grad = (1/m) * Theta1_grad; % (25*401)
+##
+##
+##% Part 3: Implement regularization with the cost function and gradients.
+##%
+##%         Hint: You can implement this around the code for
+##%               backpropagation. That is, you can compute the gradients for
+##%               the regularization separately and then add them to Theta1_grad
+##%               and Theta2_grad from Part 2.
+##
+##% Regularization
+##
+##% Theta1_grad(:, 1) = Theta1_grad(:, 1) ./ m; % for j = 0
+##% 
+##Theta1_grad(:, 2:end) = Theta1_grad(:, 2:end) + ((lambda/m) * Theta1(:, 2:end)); % for j >= 1 
+##% 
+##% Theta2_grad(:, 1) = Theta2_grad(:, 1) ./ m; % for j = 0
+##% 
+##Theta2_grad(:, 2:end) = Theta2_grad(:, 2:end) + ((lambda/m) * Theta2(:, 2:end)); % for j >= 1
 
 
 % -------------------------------------------------------------
