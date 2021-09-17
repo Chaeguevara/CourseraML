@@ -25,9 +25,9 @@ idx = ones(size(X,1), 1);
 for i = 1:size(X,1)
   
   %Repeat X(i) K times
-  X_subDist = repmat(X(i,:,:),K,1);
+  X_subDist = repmat(X(i,:),K,1);
   % Compute distance for all centroids
-  X_subDist = sum((X_subDist - centroids).^2,2);
+  X_subDist = sum((X_subDist - centroids).^2,2); 
   % Get index of minimum value
   [M, I] = min(X_subDist);
   % and assign to idx

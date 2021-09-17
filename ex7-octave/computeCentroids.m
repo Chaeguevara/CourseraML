@@ -28,13 +28,12 @@ centroids = zeros(K, n);
 
 %Loop through 1 to K (1..i..K)
 for i = 1:K
-  i
   %get logical matrix for idx == i
   L = logical(idx==i);
   %get subset of X labelled as i
-  X_sub = X(L,:,:);
+  X_sub = X(L,:);
   %Compute mean assign to centroids
-  centroids(i,:,:) = mean(X_sub);
+  centroids(i,:) = mean(X_sub);
 end
 
 
