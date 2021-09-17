@@ -37,7 +37,10 @@ for C_test = [0.01 0.03 0.1 0.3 1, 3, 10 30]
 end
 
 
+sorted_results = sortrows(results, 3); % sort matrix by column #3, the error, ascending
 
+C = sorted_results(1,1);
+sigma = sorted_results(1,2);
 
 
 
